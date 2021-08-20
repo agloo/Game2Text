@@ -8,8 +8,13 @@ const HOTKEY_CONFIG = '$OS_HOTKEYS';
 
 const OEM_CONFIG = {
     'Tesseract Default': '3',
-    'Tesseract LSTM': '1', 
+    'Tesseract LSTM': '1',
     'Tesseract Legacy': '0',
+}
+const OCR_LANG_TO_CODE = {
+    'Chinese (Traditional)': 'cht',
+    'Chinese (Simplified)': 'chs',
+    'Japanese': 'jpn',
 }
 let currentConfig = {}
 let logImageType = 'jpg';
@@ -20,6 +25,8 @@ const outputToClipboardSwitch = document.getElementById("output-to-clipboard-mod
 const clipboardModeSwitch = document.getElementById("clipboard-mode-switch");
 
 // OCR Control Elements
+const OCRLangSelect = document.getElementById('ocr_language_select');
+const OCRLangSelectContainer = document.getElementById('ocr_language_select_container');
 const OCREngineSelect = document.getElementById("ocr_engine_select");
 const OCREngineSelectContainer = document.getElementById("ocr_engine_select_container");
 const textOrientationSwitch = document.getElementById("text-orientation-switch");
@@ -74,6 +81,8 @@ function initConfig () {
             selectionLineWidth = appearanceConfig['selection_line_width'];
             // OCR
             const ocrConfig = config[OCR_CONFIG];
+            // tesseract was chosen over ocr_space_language arbitrarily.
+            initOCRLanguage(ocrConfig['tesseract_language']);
             initOCREngine(ocrConfig['engine']);
             // Translation
             const translationConfig = config[TRANSLATION_CONFIG];
@@ -122,6 +131,21 @@ function initDarkTheme(darkTheme) {
     if (darkTheme === 'true') {
         toggleDarkTheme();
         document.getElementById("dark-theme-switch").parentElement.MaterialSwitch.on();
+    }
+}
+
+function initOCRLanguage(lang) {
+    if (lang) {
+        const langOptions = OCRLangSelectContainer.querySelectorAll("li");
+        const selectedOption = Array.from(langOptions).find(child=>OCR_LANG_TO_CODE[child.innerText] == lang);
+        if (selectedOption) {
+            selectedOption.setAttribute('data-selected', true);
+        } else {
+            // Fallback to default Japanese if option not found
+            const defaultOption = Array.from(langOptions).find(child => child.innerText == "Japanese")
+            defaultOption.setAttribute('data-selected', true);
+        }
+        getmdlSelect.init('#ocr_language_select_container');
     }
 }
 
@@ -256,6 +280,13 @@ function toggleDarkThemeAndPersist() {
  OCR Settings 
  *
 */
+function changeOCRLanguageAndPersist() {
+    if (OCRLangSelect.value){
+        eel.update_config(OCR_CONFIG, {'tesseract_language':OCR_LANG_TO_CODE[OCRLangSelect.value] })();
+        eel.update_config(OCR_CONFIG, {'ocr_space_language':OCR_LANG_TO_CODE[OCRLangSelect.value] })();
+    }
+}
+
 function updateOCREngine() {
     OCREngine = OCREngineSelect.value;
     if (OCREngine.includes('Tesseract')) {

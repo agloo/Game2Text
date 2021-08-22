@@ -33,7 +33,7 @@
 Create a venv and activate it.
 
 ```bash
-virtualenv venv --python=python3.7.4
+virtualenv venv --python=python3.7
 source venv/bin/activate
 ```
 

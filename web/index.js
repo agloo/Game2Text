@@ -520,20 +520,22 @@ function createCanvasWithSelection({width, height, x, y}) {
 function showStuff(rect) {
   var cv2 = createCanvasWithSelection(rect);
   var ctx2 = cv2.getContext('2d');
-    // check if previous image is same as current image
+    // if we're updating automatically, check if previous image is same as current image
     const newImageData = ctx2.getImageData(0, 0, cv2.width, cv2.height)
     let sameImage = false;
-    if (imageData !== undefined) {
-      if (imageData.width === newImageData.width && imageData.height === newImageData.height) {
-        if (typeof pixelmatch === 'function') { 
-          numDiffPixels = pixelmatch(imageData.data, newImageData.data, null, imageData.width, imageData.height, {threshold: 0.1});
-          if (numDiffPixels < 10) {
-            sameImage = true;
+    if (autoMode) {
+        if (imageData !== undefined) {
+          if (imageData.width === newImageData.width && imageData.height === newImageData.height) {
+            if (typeof pixelmatch === 'function') { 
+              numDiffPixels = pixelmatch(imageData.data, newImageData.data, null, imageData.width, imageData.height, {threshold: 0.1});
+              if (numDiffPixels < 10) {
+                sameImage = true;
+                }
+              }
             }
           }
-        }
-      }
-      if (!sameImage || !autoMode) {
+    }
+    if (!sameImage || !automode) {
         imageData = newImageData;
         ctx2.putImageData(preprocessImage(cv2), 0, 0);
         imageDataURL = cv2.toDataURL('image/png');
@@ -541,7 +543,7 @@ function showStuff(rect) {
         recognize_image(imageb64, null);
         // Destroy canvas
         ctx2.clearRect(0,0,cv2.width,cv2.height);
-      }
+    }
 }
 
 eel.expose(getVideoImage)

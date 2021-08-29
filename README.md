@@ -4,12 +4,14 @@
 
 [Game2Text](https://www.game2text.com) is an all-in-one application that helps you learn languages from the games you play.
 
+This repo is a fork of Game2Text support for recognizing traditional and simplified Chinese characters added, plus a few extra tweaks.
+
 ## Platforms
 - Windows 10
 - Mac OSX Mojave, Catalina
 
 ## Text Extraction Modes
-- Classic OCR with Tesseract, Tesseract Legacy, or OCR Space.
+- Classic OCR with Tesseract or OCR Space.
 - OCR-assisted game script matching
 - Text hooking (for Visual Novels)
 - Clipboard to Game2Text
@@ -31,6 +33,7 @@
 ## Development
 
 Create a venv and activate it.
+Python 3.7 is specifically needed for a few packages that aren't on later versions yet.
 
 ```bash
 virtualenv venv --python=python3.7

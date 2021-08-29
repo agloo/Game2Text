@@ -34,23 +34,11 @@ def path_to_tesseract():
     platform_name = platform.system()  # E.g. 'Windows'
     return exec_data[platform_name], platform_name
 
-def get_tessdata_dir():
-    platform_name = platform.system() 
+def get_tessdata_dir_cmdline_arg():
+    platform_name = platform.system()
     if platform_name == 'Darwin':
-        if r_config(OCR_CONFIG, "oem") == '0': 
-            # legacy tesseract
-            return '--tessdata-dir {}'.format(str(Path(OSX_TESSERACT_DIR, "share", "legacy", "tessdata")))
-        else:
-            return '--tessdata-dir {}'.format(str(Path(OSX_TESSERACT_DIR, "share", "tessdata")))
-    elif platform_name == 'Windows':
-        if (r_config(OCR_CONFIG, "oem") == '0' and Path(WIN_TESSERACT_DIR, "tessdata-legacy").exists()): 
-            # legacy tesseract by renaming tessdata folders
-            os.rename(Path(WIN_TESSERACT_DIR, "tessdata"), Path(WIN_TESSERACT_DIR, "tessdata-new"))
-            os.rename(Path(WIN_TESSERACT_DIR, "tessdata-legacy"), Path(WIN_TESSERACT_DIR, "tessdata"))
-        elif (r_config(OCR_CONFIG, "oem") != '0' and Path(WIN_TESSERACT_DIR, "tessdata-new").exists()):  
-            # revert to default tessdata folder
-            os.rename(Path(WIN_TESSERACT_DIR, "tessdata"), Path(WIN_TESSERACT_DIR,  "tessdata-legacy"))
-            os.rename(Path(WIN_TESSERACT_DIR, "tessdata-new"), Path(WIN_TESSERACT_DIR, "tessdata"))
+        return '--tessdata-dir {}'.format(str(Path(OSX_TESSERACT_DIR, "share", "tessdata")))
+    # Since we store the tessdata right by the executable on win, we don't need to pass in a string.
     return ''
 
 def path_to_textractor():

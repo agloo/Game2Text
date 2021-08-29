@@ -6,6 +6,11 @@ const LOG_CONFIG = 'LOGCONFIG';
 const TEXTHOOKER_CONFIG = 'TEXTHOOKERCONFIG';
 const HOTKEY_CONFIG = '$OS_HOTKEYS';
 
+// OEM means OCR Engine Model.
+// 0 = legacy only
+// 1 = LSTM only
+// 2 = Legacy + LSTM
+// 3 = Default
 const OEM_CONFIG = {
     'Tesseract Default': '3',
     'Tesseract LSTM': '1',

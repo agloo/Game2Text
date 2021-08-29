@@ -89,6 +89,7 @@ function initConfig () {
             // tesseract was chosen over ocr_space_language arbitrarily.
             initOCRLanguage(ocrConfig['tesseract_language']);
             initOCREngine(ocrConfig['engine']);
+            initTextOrientation(ocrConfig['vertical_text']);
             // Translation
             const translationConfig = config[TRANSLATION_CONFIG];
             initTranslation(translationConfig['translation_service'])
@@ -139,6 +140,23 @@ function initDarkTheme(darkTheme) {
     }
 }
 
+function DisableVerticalTextSwitchIfUnsupported() {
+    if (OCREngine.includes('Tesseract')) {
+        // The vertical .traineddata files don't support the legacy engine, for whatever reason.
+        if (OCREngine.includes('Legacy') && OCRLangSelect.value.includes('Chinese')) {
+            textOrientationSwitch.disabled = true;
+            textOrientationSwitch.parentNode.classList.add("is-disabled");
+        } else {
+            textOrientationSwitch.disabled = false;
+            textOrientationSwitch.parentNode.classList.remove("is-disabled");
+        }
+    } else {
+        // OCR Space doesn't support vertical text.
+        textOrientationSwitch.disabled = true;
+        textOrientationSwitch.parentNode.classList.add("is-disabled");
+    }
+}
+
 function initOCRLanguage(lang) {
     if (lang) {
         const langOptions = OCRLangSelectContainer.querySelectorAll("li");
@@ -167,6 +185,14 @@ function initOCREngine(engine) {
             defaultOption.setAttribute('data-selected', true);
         }
         getmdlSelect.init('#ocr_engine_select_container');
+    }
+}
+
+function initTextOrientation(vertical_text) {
+    DisableVerticalTextSwitchIfUnsupported();
+    if (vertical_text === 'true' && textOrientationSwitch.disabled == false) {
+        toggleTextOrientation();
+        textOrientationSwitch.parentElement.MaterialSwitch.on();
     }
 }
 
@@ -287,17 +313,7 @@ function toggleDarkThemeAndPersist() {
 */
 function changeOCRLanguageAndPersist() {
     OCREngine = OCREngineSelect.value;
-    if (OCREngine.includes('Tesseract')) {
-        // Enable Tesseract Features
-        // The vertical .traineddata files don't support the legacy engine, for whatever reason.
-        if (OCREngine.includes('Legacy') && OCRLangSelect.value.includes('Chinese')) {
-            textOrientationSwitch.disabled = true;
-            textOrientationSwitch.parentNode.classList.add("is-disabled");
-        } else {
-            textOrientationSwitch.disabled = false;
-            textOrientationSwitch.parentNode.classList.remove("is-disabled");
-        }
-    }
+    DisableVerticalTextSwitchIfUnsupported();
     if (OCRLangSelect.value){
         eel.update_config(OCR_CONFIG, {'tesseract_language':OCR_LANG_TO_CODE[OCRLangSelect.value] })();
         eel.update_config(OCR_CONFIG, {'ocr_space_language':OCR_LANG_TO_CODE[OCRLangSelect.value] })();
@@ -307,21 +323,7 @@ function changeOCRLanguageAndPersist() {
 
 function updateOCREngine() {
     OCREngine = OCREngineSelect.value;
-    if (OCREngine.includes('Tesseract')) {
-        // Enable Tesseract Features
-        // The vertical .traineddata files don't support the legacy engine, for whatever reason.
-        if (OCREngine.includes('Legacy') && OCRLangSelect.value.includes('Chinese')) {
-            textOrientationSwitch.disabled = true;
-            textOrientationSwitch.parentNode.classList.add("is-disabled");
-        } else {
-            textOrientationSwitch.disabled = false;
-            textOrientationSwitch.parentNode.classList.remove("is-disabled");
-        }
-    } else {
-        // Incompatible Tesseract text recognition features
-        textOrientationSwitch.disabled = true;
-        textOrientationSwitch.parentNode.classList.add("is-disabled");
-    }
+    DisableVerticalTextSwitchIfUnsupported();
     refreshOCR();
     return OCREngine;
 }
@@ -335,10 +337,14 @@ function updateOCREngineAndPersist() {
         }
     }
 }
-  
 function toggleTextOrientation() {
     verticalText = !verticalText;
     refreshOCR();
+}
+
+function toggleTextOrientationAndPersist() {
+    toggleTextOrientation();
+    eel.update_config(OCR_CONFIG, {'vertical_text': verticalText ? 'true' : 'false'})();
 }
 
 /*

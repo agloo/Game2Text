@@ -297,6 +297,7 @@ function changeOCRLanguageAndPersist() {
         eel.update_config(OCR_CONFIG, {'tesseract_language':OCR_LANG_TO_CODE[OCRLangSelect.value] })();
         eel.update_config(OCR_CONFIG, {'ocr_space_language':OCR_LANG_TO_CODE[OCRLangSelect.value] })();
     }
+    refreshOCR()
 }
 
 function updateOCREngine() {
@@ -316,6 +317,7 @@ function updateOCREngine() {
         textOrientationSwitch.disabled = true;
         textOrientationSwitch.parentNode.classList.add("is-disabled");
     }
+    refreshOCR();
     return OCREngine;
 }
 
@@ -331,6 +333,7 @@ function updateOCREngineAndPersist() {
   
 function toggleTextOrientation() {
     verticalText = !verticalText;
+    refreshOCR();
 }
 
 /*

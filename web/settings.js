@@ -281,6 +281,18 @@ function toggleDarkThemeAndPersist() {
  *
 */
 function changeOCRLanguageAndPersist() {
+    OCREngine = OCREngineSelect.value;
+    if (OCREngine.includes('Tesseract')) {
+        // Enable Tesseract Features
+        // The vertical .traineddata files don't support the legacy engine, for whatever reason.
+        if (OCREngine.includes('Legacy') && OCRLangSelect.value.includes('Chinese')) {
+            textOrientationSwitch.disabled = true;
+            textOrientationSwitch.parentNode.classList.add("is-disabled");
+        } else {
+            textOrientationSwitch.disabled = false;
+            textOrientationSwitch.parentNode.classList.remove("is-disabled");
+        }
+    }
     if (OCRLangSelect.value){
         eel.update_config(OCR_CONFIG, {'tesseract_language':OCR_LANG_TO_CODE[OCRLangSelect.value] })();
         eel.update_config(OCR_CONFIG, {'ocr_space_language':OCR_LANG_TO_CODE[OCRLangSelect.value] })();
@@ -291,8 +303,14 @@ function updateOCREngine() {
     OCREngine = OCREngineSelect.value;
     if (OCREngine.includes('Tesseract')) {
         // Enable Tesseract Features
-        textOrientationSwitch.disabled = false;
-        textOrientationSwitch.parentNode.classList.remove("is-disabled");
+        // The vertical .traineddata files don't support the legacy engine, for whatever reason.
+        if (OCREngine.includes('Legacy') && OCRLangSelect.value.includes('Chinese')) {
+            textOrientationSwitch.disabled = true;
+            textOrientationSwitch.parentNode.classList.add("is-disabled");
+        } else {
+            textOrientationSwitch.disabled = false;
+            textOrientationSwitch.parentNode.classList.remove("is-disabled");
+        }
     } else {
         // Incompatible Tesseract text recognition features
         textOrientationSwitch.disabled = true;

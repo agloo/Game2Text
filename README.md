@@ -1,4 +1,4 @@
-# Game2Text
+# Game2Text (With Chinese Support)
 
 ![image](https://user-images.githubusercontent.com/13146030/117099796-b3efa180-ada4-11eb-8c68-431dfa0acdb5.png)
 
@@ -13,7 +13,7 @@ This repo is a fork of Game2Text support for recognizing traditional and simplif
 ## Text Extraction Modes
 - Classic OCR with Tesseract or OCR Space.
 - OCR-assisted game script matching
-- Text hooking (for Visual Novels)
+- Text hooking (for Visual Novels) (untested for Chinese)
 - Clipboard to Game2Text
 
 ## Features
@@ -22,7 +22,7 @@ This repo is a fork of Game2Text support for recognizing traditional and simplif
 - Create game flashcards with screenshot and game audio via Anki and AnkiConnect
 
 ## Download 
-[Download Game2Text](https://game2text.com/download/) 
+Binaries are released directly through [this github](https://github.com/agloo/Game2Text/releases), NOT the official Game2Text website.
 
 ## User Guide
 [Read User Guide](https://game2text.com/user-guide/quick-start/)
@@ -81,6 +81,8 @@ Mac:
 Temporary fix for all read/write operations using *os.path* on Mac builds with pyinstaller: create a wrapper file that runs the Game2Text executable inside the package
 
 ## Acknowledgement
+
+Matthew Chan for Game2Text
 
 #### Tools
 
